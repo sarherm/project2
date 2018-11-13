@@ -27,17 +27,18 @@ def grab_headlines(soup):
     
     # get the most read div
     top_read = soup.find_all('div', class_ = 'view view-most-read view-id-most_read view-display-id-panel_pane_1 view-dom-id-99658157999dd0ac5aa62c2b284dd266') 
-    
     headlines = top_read[0].find_all('a')
+    #headlines = top_read.find_all("li")
+    
     # get the ordered list from that div
     list_headlines = []
     for headline in headlines: 
         list_headlines.append(headline.text)
-    return list_headlines
+    
     # get the links from the ordered list div
 
     # return the headlines
-   
+    return list_headlines
     #pass
 
 
@@ -62,7 +63,8 @@ def get_headline_dict(soup):
     
     # find the link in headline div
     for link in links: 
-        headline_dict[links.text.strip()] = link.get('href', None)
+        get_href = link.get('href', None)
+        headline_dict[links.text.strip()] = base_url + get_href
     # set the dictionary key to the headline and the url as the value
     return headline_dict
 
