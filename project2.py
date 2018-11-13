@@ -1,8 +1,8 @@
 ## SI 206 F18 - Project 2
 
 ## COMMENT HERE WITH:
-## Your name: Sarah Herman 
-## Anyone you worked with on this project and how you worked together
+## Your name: Sarah Herman  
+## Anyone you worked with on this project and how you worked together: Sarah Fodor and Rachel Gordon 
 ## You can not share code, but can share ideas
 ###########
 
@@ -51,23 +51,22 @@ def get_headline_dict(soup):
     # create the empty dictionary
     headline_dict = {}
     # get the story wrap divs
-    base_url = 'https://www.michigandaily.com/section/news'
-    page = urlopen(base_url).read()
-    
-    soup = BeautifulSoup(page, "html.parser")
+    story_wraps = soup.find_all('div', class_ = 'storywrap')
+
     
     # get the most read div
     #top_read = soup.find_all('div', class_ = "view view-most-read view-id-most_read view-display-id-panel_pane_1 view-dom-id-99658157999dd0ac5aa62c2b284dd266")
-    links = soup.find_all('a', class_ = 'view view-most-read view-id-most_read view-display-id-panel_pane_1 view-dom-id-99658157999dd0ac5aa62c2b284dd266')
-    # get the short headline
+    for story in story_wraps: 
+        # get the short headline
+        short_headline = story.find('div', class_= 'views-field-field-short-headline').get_text()
+        content = story.find('div', class_ = 'field-content')
+        #find the link in headline div
+        link = content.find('a')['href']
+        # set the dictionary key to the headline and the url as the value
+        headline_dict[short_headline.strip()] = link
     
-    # find the link in headline div
-    for link in links: 
-        get_href = link.get('href', None)
-        headline_dict[links.text.strip()] = base_url + get_href
-    # set the dictionary key to the headline and the url as the value
     return headline_dict
-
+      
 
 ## PART 3 Define a function called get_page_info. It will take a soup object for a story
 ## and return a tuple with the title, author, date, and the number of paragraphs
@@ -141,7 +140,7 @@ class TestP2(unittest.TestCase):
 
     def test_get_headline_dict(self):
         dict = get_headline_dict(self.soup)
-        url = dict[' Dialogues on Diversity holds discussion on microaggressions, accountability ']
+        url = dict['Dialogues on Diversity holds discussion on microaggressions, accountability']
         self.assertEqual(len(dict.items()), 19)
         self.assertEqual(url,'https://www.michigandaily.com/section/campus-life/diversity-sciences')
 
