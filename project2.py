@@ -76,22 +76,28 @@ def get_headline_dict(soup):
 def get_page_info(soup):
     
     # get the title
-    
+    title = soup.find('div', class_ = 'pane-node-title').h2.get_text()
     # get the date
-    
+    date = soup.find('div', class_ = 'pane-node-created').find('div', class_ = 'pane-content').get_text()
     # get the author
-    
+    author = soup.find('div', class_ = 'byline').find('div', class_ = 'link').get_text().strip()
     # get the number of paragraphs
-    
+    num_paragraphs = len(soup.find('div', class_ = 'field-name-body').find_all('p'))
     # return the tuple
-
-    pass
+    return(title, date, author, num_paragraphs)
+    
 
 ## Extra Credit
 ## INPUT: the dictionary that was returned from part 2
 ## OUTPUT: a new dictionary with just items that contain the word U-M or Ann Arbor
 def find_mich_stuff(dict):
-    pass
+    new_dict = {}
+    d_items = dict.items()
+    for k, v in d_items: 
+        if 'U-M' in k or 'Ann Arbor' in k:
+            new_dict[k.strip()] = v
+    return new_dict
+    
 
 ########### TESTS; DO NOT CHANGE ANY CODE BELOW THIS LINE! ###########
 
@@ -114,18 +120,19 @@ def getSoupObjFromFile(fileName):
     return soup
 
 # testing on live urls - remove the string comments to run this 
-"""
+'''
 soup = getSoupObjFromURL("https://www.michigandaily.com/section/news")
-print(grab_headlines(soup))
-hDict = get_headline_dict(soup)
-print(hDict)
-# get page info for each story in hDict
-for key, value in hDict.items():
-    tuple = getPageInfo(hDict, "http://www.michigandaily.com/")
-    print(tuple)
-#nDict = find_mich_stuff(hDict) # for extra credit
-#print(nDict)
-"""
+# print(grab_headlines(soup))
+# hDict = get_headline_dict(soup)
+# print(hDict)
+# # get page info for each story in hDict
+# for key, value in hDict.items():
+#     tuple = get_page_info(soup)
+#     print(tuple)
+# nDict = find_mich_stuff(hDict) # for extra credit
+# print(nDict)
+#hDict, "http://www.michigandaily.com/"
+''' 
 
 # Test using unittests and saved pages
 class TestP2(unittest.TestCase):
@@ -147,14 +154,14 @@ class TestP2(unittest.TestCase):
     def test_get_page_info(self):
         self.assertEqual(get_page_info(self.soup2), ('Panel discusses pros, cons of Library Lot ballot proposal', '\n    Thursday, October 25, 2018 - 9:28pm  ', 'Leah Graham', 17))
 
-    """
+    
     def test_find_mich_stuff(self):
         dict = find_mich_stuff(self.dict)
-        url1 = dict[' Ann Arbor state Rep. proposes bill to vastly increase renewable energy ']
-        url2 = dict[' U-M freshman runs for Ann Arbor School Board position ']
+        url1 = dict['Ann Arbor state Rep. proposes bill to vastly increase renewable energy']
+        url2 = dict['U-M freshman runs for Ann Arbor School Board position']
         self.assertEqual(len(dict), 4)
         self.assertEqual(url1,'https://www.michigandaily.com/section/government/state-rep-proposes-bill-100-percent-renewable-energy-michigan-2050')
         self.assertEqual(url2,'https://www.michigandaily.com/section/ann-arbor/school-board-candidates-fight-name-recognition-race')
-    """
+    
 
 unittest.main(verbosity=2)
